@@ -15,7 +15,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx db/seed.ts",
-    "db:reset": "tsx scripts/db-reset.ts"
+    "db:reset": "tsx scripts/db-reset.ts",
+    "db:fixtures": "tsx scripts/dev-fixtures.ts"
   },
   "dependencies": {
     "@react-email/components": "^1.0.12",

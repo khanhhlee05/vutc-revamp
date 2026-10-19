@@ -39,6 +39,7 @@ admin account for the email you pass.
 | `npm run db:generate` | Create a migration from changes to `db/schema.ts` |
 | `npm run db:migrate` | Apply migrations |
 | `npm run db:seed` | Seed packages (and a dev admin) |
+| `npm run db:fixtures` | Create sample events for development and e2e tests |
 | `npm run db:reset` | Drop and recreate the local schema (local DBs only) |
 | `npm run db:studio` | Drizzle Studio |
 
@@ -47,11 +48,15 @@ admin account for the email you pass.
 ```bash
 npm run build
 SEED_ADMIN_EMAIL=admin@vutc.test SEED_ADMIN_PASSWORD='dev-password-123!' npm run db:seed
+npm run db:fixtures
 npm run test:e2e
 ```
 
-The login test expects the seeded admin above. Playwright starts `next start`
-on port 3100 by itself.
+The tests expect the seeded admin and the fixture events above. Playwright
+starts `next start` on port 3100 by itself. Login is rate limited to 5
+attempts a minute per IP, so a setup project signs in once and shares the
+session; if a local run fails at login, wait a minute or clear the
+`rate_limit` table.
 
 ## Layout
 
@@ -75,4 +80,6 @@ tests/          unit and e2e tests
 - Secrets live in environment variables only. `.env.local` is git-ignored.
 - Passwords are hashed by better-auth (scrypt). Login is rate limited.
 - Mutations that matter are written to `audit_log` through `lib/audit.ts`.
+- Staff signup eligibility is a pure function in `lib/events/eligibility.ts`
+  with unit tests; server actions re-evaluate it before writing.
 - Security headers (CSP, HSTS, frame denial) are set in `next.config.ts`.

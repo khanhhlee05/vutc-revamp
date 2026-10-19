@@ -2,6 +2,14 @@ import { defineConfig, devices } from "@playwright/test";
 
 const port = 3100;
 
+const browser = {
+  ...devices["Desktop Chrome"],
+  // Allow a preinstalled browser (CI images, cloud sandboxes).
+  launchOptions: process.env.PW_CHROMIUM_PATH
+    ? { executablePath: process.env.PW_CHROMIUM_PATH }
+    : undefined,
+};
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
@@ -23,15 +31,11 @@ export default defineConfig({
     },
   },
   projects: [
+    { name: "setup", testMatch: /.*\.setup\.ts/, use: { ...browser } },
     {
       name: "chromium",
-      use: {
-        ...devices["Desktop Chrome"],
-        // Allow a preinstalled browser (CI images, cloud sandboxes).
-        launchOptions: process.env.PW_CHROMIUM_PATH
-          ? { executablePath: process.env.PW_CHROMIUM_PATH }
-          : undefined,
-      },
+      dependencies: ["setup"],
+      use: { ...browser },
     },
   ],
 });

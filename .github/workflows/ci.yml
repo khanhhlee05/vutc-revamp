@@ -45,6 +45,7 @@ jobs:
         env:
           SEED_ADMIN_EMAIL: admin@vutc.test
           SEED_ADMIN_PASSWORD: dev-password-123!
+      - run: npm run db:fixtures
       - run: npm test
       - run: npm run build
       - run: npx playwright install --with-deps chromium

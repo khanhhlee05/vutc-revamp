@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/auth/session";
-import { can } from "@/lib/auth/session";
+import { can, getCurrentUser } from "@/lib/auth/session";
 import { SignOutButton } from "./sign-out-button";
 
 const publicLinks = [
@@ -34,8 +33,14 @@ export async function SiteHeader() {
               <Link href="/events" className="hover:underline">
                 Sign Up
               </Link>
-              {can(user, "event_mgmt") && (
-                <Link href="/manage/events" className="hover:underline">
+              <Link href="/my-events" className="hover:underline">
+                My Events
+              </Link>
+              <Link href="/leaderboard" className="hover:underline">
+                Leaderboard
+              </Link>
+              {(can(user, "event_mgmt") || can(user, "pers_mgmt") || can(user, "bus_mgmt")) && (
+                <Link href="/manage" className="hover:underline font-medium">
                   Manage
                 </Link>
               )}
@@ -45,7 +50,9 @@ export async function SiteHeader() {
         <div className="ml-auto text-sm flex items-center gap-3">
           {user ? (
             <>
-              <span className="opacity-90">{user.name}</span>
+              <Link href="/account" className="opacity-90 hover:underline">
+                {user.name}
+              </Link>
               <SignOutButton />
             </>
           ) : (

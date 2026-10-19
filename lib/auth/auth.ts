@@ -33,13 +33,18 @@ export const auth = betterAuth({
     revokeSessionsOnPasswordReset: true,
     resetPasswordTokenExpiresIn: 60 * 60 * 24, // invite and reset links last a day
     sendResetPassword: async ({ user, url }) => {
+      const isInvite = url.includes("invite%3D1") || url.includes("invite=1");
       await sendEmail({
         to: user.email,
-        subject: "Set your VUTC password",
+        subject: isInvite
+          ? "Your VUTC staff account"
+          : "Reset your VUTC password",
         text: [
           `Hi ${user.name},`,
           "",
-          "Use the link below to set your password for the VUTC staff site. It expires in 24 hours.",
+          isInvite
+            ? "A VUTC staff account was created for you. Use the link below to set your password. It expires in 24 hours."
+            : "Use the link below to reset your password for the VUTC staff site. It expires in 24 hours.",
           url,
           "",
           "If you did not expect this email, you can ignore it.",
