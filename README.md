@@ -68,11 +68,27 @@ components/     shared React components
 db/             schema.ts, migrations/, seed.ts, seed-data/
 lib/auth/       better-auth instance, session helpers, role rules
 lib/events/     eligibility rules, lifecycle transition table, pricing, management actions
-lib/pdf/        quote and invoice PDFs (@react-pdf/renderer)
+lib/pay/        pay split (pure, unit tested), timesheet, payroll, and billing actions
+lib/pdf/        quote, invoice, and payroll PDFs (@react-pdf/renderer)
 lib/            audit log, email templates, env validation, storage, Turnstile
 scripts/        maintenance and legacy migration scripts
 tests/          unit and e2e tests
 ```
+
+## Pay split rules
+
+`lib/pay/split.ts` ports the legacy timesheet math. Revenue is routed by
+`packages.payRouting`: operator packages pay the matching operator (split by
+run fraction when several hold the role), wireless mics and power distribution
+go to VUTC, rental packages are split between the pickup and dropoff drivers,
+and everything else is the base pool. VUTC takes 50% of the base; the rest is
+split by load fraction. Event or senior staff who log run time draw from the
+head tech pools in proportion to their run time.
+
+One deliberate change from the legacy code, to confirm with the VP of Finance:
+the client discount is charged to VUTC's share once. The old site subtracted
+it from both the staff pool and VUTC's share and silently dropped the
+difference, so payouts plus VUTC share did not add up to what the client paid.
 
 ## Security rules
 

@@ -32,6 +32,7 @@ export default async function StaffEventPage(props: {
     .where(eq(eventLineItems.eventId, event.id))
     .orderBy(eventLineItems.id);
   const isManager = can(user, "event_mgmt");
+  const isLead = workers.length > 0 && listing.decisions.some((d) => d.state === "signed" && ["aht", "lht", "vht", "dj"].includes(d.role));
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -44,6 +45,11 @@ export default async function StaffEventPage(props: {
         {isManager ? (
           <Link href={`/manage/events/${event.id}`} className="text-sm underline ml-auto">
             Manage this event
+          </Link>
+        ) : null}
+        {(isManager || isLead) && (event.status === "open" || event.status === "confirmed" || event.status === "completed") ? (
+          <Link href={`/events/${event.id}/timesheet`} className="text-sm underline">
+            Timesheet
           </Link>
         ) : null}
       </div>

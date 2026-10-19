@@ -13,6 +13,7 @@ const MESSAGES: Record<string, string> = {
   invalid: "Something was missing or invalid. Please try again.",
   nolines: "Add at least one package or custom line before sending a quote.",
   saved: "Saved.",
+  billed: "Invoice emailed to the client and the event marked billed.",
 };
 
 export function Flash({ code }: { code?: string }) {

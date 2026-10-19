@@ -13,7 +13,8 @@ export default async function ManageLayout({ children }: { children: React.React
     { href: "/manage/users", label: "Personnel", ok: persMgmt },
     { href: "/manage/notifications", label: "Notifications", ok: persMgmt || eventMgmt },
     { href: "/manage/board", label: "Board", ok: persMgmt },
-    { href: "/manage/payroll", label: "Business", ok: busMgmt },
+    { href: "/manage/payroll", label: "Payroll", ok: busMgmt },
+    { href: "/manage/billing", label: "Billing", ok: busMgmt },
   ].filter((a) => a.ok);
   if (areas.length === 0) redirect("/forbidden");
   return (
