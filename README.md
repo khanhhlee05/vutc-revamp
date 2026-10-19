@@ -35,12 +35,23 @@ admin account for the email you pass.
 | `npm run build` / `npm start` | Production build and serve |
 | `npm run lint` / `npm run typecheck` | ESLint and `tsc --noEmit` |
 | `npm test` | Unit tests (Vitest) |
-| `npm run test:e2e` | Playwright tests |
+| `npm run test:e2e` | Playwright tests (builds first: `npm run build`). Set `PW_CHROMIUM_PATH` to reuse a preinstalled Chromium. |
 | `npm run db:generate` | Create a migration from changes to `db/schema.ts` |
 | `npm run db:migrate` | Apply migrations |
 | `npm run db:seed` | Seed packages (and a dev admin) |
 | `npm run db:reset` | Drop and recreate the local schema (local DBs only) |
 | `npm run db:studio` | Drizzle Studio |
+
+## End to end tests
+
+```bash
+npm run build
+SEED_ADMIN_EMAIL=admin@vutc.test SEED_ADMIN_PASSWORD='dev-password-123!' npm run db:seed
+npm run test:e2e
+```
+
+The login test expects the seeded admin above. Playwright starts `next start`
+on port 3100 by itself.
 
 ## Layout
 

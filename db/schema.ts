@@ -513,6 +513,24 @@ export const eventAssignments = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Public site content
+// ---------------------------------------------------------------------------
+
+/** Executive board listing shown on the About page. */
+export const boardPositions = pgTable("board_positions", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  title: text("title").notNull(),
+  /** "Contact them about" text. */
+  contactAbout: text("contact_about").notNull().default(""),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  /** Shown when no user is linked (e.g. faculty advisor). */
+  displayName: text("display_name"),
+  displayEmail: text("display_email"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isVisible: boolean("is_visible").notNull().default(true),
+});
+
+// ---------------------------------------------------------------------------
 // Misc
 // ---------------------------------------------------------------------------
 
@@ -635,6 +653,10 @@ export const eventAssignmentsRelations = relations(
     }),
   }),
 );
+
+export const boardPositionsRelations = relations(boardPositions, ({ one }) => ({
+  user: one(user, { fields: [boardPositions.userId], references: [user.id] }),
+}));
 
 export const payrollsRelations = relations(payrolls, ({ many }) => ({
   events: many(events),
