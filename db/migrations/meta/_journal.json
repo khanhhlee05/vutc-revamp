@@ -15,6 +15,13 @@
       "when": 1792443050405,
       "tag": "0001_board_positions",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792444531841,
+      "tag": "0002_organization_comments",
+      "breakpoints": true
     }
   ]
 }

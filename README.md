@@ -61,11 +61,15 @@ session; if a local run fails at login, wait a minute or clear the
 ## Layout
 
 ```
-app/            routes (public pages, /login, /dashboard, /manage/*, /api/*)
+app/            routes (public pages, /login, /dashboard, /events, /manage/*, /api/*)
+                /manage/events: event lifecycle, details, packages and quote, staffing
+                /manage/organizations, /manage/users, /manage/notifications, /manage/board
 components/     shared React components
 db/             schema.ts, migrations/, seed.ts, seed-data/
 lib/auth/       better-auth instance, session helpers, role rules
-lib/            audit log, email, env validation, domain logic
+lib/events/     eligibility rules, lifecycle transition table, pricing, management actions
+lib/pdf/        quote and invoice PDFs (@react-pdf/renderer)
+lib/            audit log, email templates, env validation, storage, Turnstile
 scripts/        maintenance and legacy migration scripts
 tests/          unit and e2e tests
 ```

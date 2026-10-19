@@ -262,6 +262,23 @@ export const organizations = pgTable(
   (t) => [index("organizations_name_idx").on(t.name)],
 );
 
+/** Internal notes about a client organization (legacy table: clientComments). */
+export const organizationComments = pgTable(
+  "organization_comments",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    organizationId: integer("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("organization_comments_org_idx").on(t.organizationId)],
+);
+
 /** Price list entry (legacy table: pricing). */
 export const packages = pgTable("packages", {
   id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
@@ -595,7 +612,22 @@ export const userRolesRelations = relations(userRoles, ({ one }) => ({
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   events: many(events),
+  comments: many(organizationComments),
 }));
+
+export const organizationCommentsRelations = relations(
+  organizationComments,
+  ({ one }) => ({
+    organization: one(organizations, {
+      fields: [organizationComments.organizationId],
+      references: [organizations.id],
+    }),
+    user: one(user, {
+      fields: [organizationComments.userId],
+      references: [user.id],
+    }),
+  }),
+);
 
 export const packagesRelations = relations(packages, ({ many }) => ({
   lineItems: many(eventLineItems),
