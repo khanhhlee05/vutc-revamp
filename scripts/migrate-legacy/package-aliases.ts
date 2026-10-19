@@ -1,0 +1,46 @@
+/**
+ * Legacy `work.package` names that no longer match the price list. Maps to the
+ * current package name, or null to keep the line with no package link.
+ * Unmatched names fall back to null automatically; list them here only to
+ * link them to a current package.
+ */
+export const PACKAGE_ALIASES: Record<string, string | null> = {
+  "Half-Stack": "Half-Stack PA",
+  "Full-Stack": "Full-Stack PA",
+  "Misc Audio Equipment": "Misc. Audio Equipment",
+  "Misc Video Services": "Misc. Video Equipment",
+  "Pipe & Drape": "Pipe and Drape",
+  "Rental Pick-up/Drop-off": "Rental Pickup/Drop-off",
+  "Rental Local": "Rental Pickup/Drop-off",
+  "Rush Fee": "Rush Fee - $50",
+  "Rush Fee- Percentage": "Rush Fee - Percentage",
+  "Power Drop": "Power Distribution",
+  "Network services": "Network Services",
+  "Extended Wireless Mics": "Wireless Mics",
+  "Spotlight Op": "Spot Op",
+  "Runner Op - Basic": "Runner Op",
+  "Light Op": "Light Op - Basic",
+  "Video Op": "Video Op - Basic",
+  "Audio Op - Limited": "Audio Op - Basic",
+  "Audio Op - Live Music": "Audio Op - Advanced",
+  "Audio Op - Band": "Audio Op - Production",
+  "Public DJ": "DJ",
+  "Private DJ": "DJ",
+  "Single 6k Projector": "Projectors",
+  "Dual 6k Projector": "Projectors",
+  "Dual 6k Projector - Large": "Projectors",
+  "Single 4k Projector": "Projectors",
+  "Truss Lighting": "Overhead Truss",
+  "Overhead Truss (Stagewash)": "Overhead Truss",
+  "Overhead Truss (LED)": "Overhead Truss",
+  "2 Truss Sticks (LED)": "2 Vertical Towers",
+  "2 Truss Sticks (Stagewash)": "2 Vertical Towers",
+  "Uplighting(4-6)": "Uplighting",
+  "Uplighting(10+)": "Uplighting",
+  "Recording": "Event Recording",
+  "Stems": "Multitracks",
+  "Mixing Tracks": "Mastering",
+  "Basic Video Services": "Production Video Services",
+  "Video Services": "Production Video Services",
+  "Subwoofer": "Monitor",
+};

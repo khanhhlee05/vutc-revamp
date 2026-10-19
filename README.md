@@ -90,6 +90,60 @@ the client discount is charged to VUTC's share once. The old site subtracted
 it from both the staff pool and VUTC's share and silently dropped the
 difference, so payouts plus VUTC share did not add up to what the client paid.
 
+## Scheduled jobs
+
+Two endpoints under `/api/cron` are called by Vercel Cron (see `vercel.json`)
+with `Authorization: Bearer $CRON_SECRET`:
+
+| Path | Schedule (UTC) | Does |
+|---|---|---|
+| `/api/cron/evening` | 00:00 (8 PM EDT / 7 PM EST) | Opens events whose auto-open date has arrived, then emails the daily digest to staff who opted in |
+| `/api/cron/midnight` | 05:00 (1 AM EDT / midnight EST) | Emails the events inbox about events in the next two days that are short on senior staff |
+
+Any scheduler that can send the bearer header works (GitHub Actions, cron on a
+VPS) if the app is not on Vercel.
+
+## Migrating the legacy database
+
+Only four legacy tables are migrated: `clients`, `pricing`, `events`, `work`.
+Staff accounts, pay history, and custom quotes start fresh.
+
+```bash
+npm run db:migrate && npm run db:seed          # schema + price list
+npm run migrate:legacy -- path/to/vutc_new.sql # clients -> organizations, events, work -> line items
+npm run migrate:verify -- path/to/vutc_new.sql # counts, status distribution, 20 spot checks
+```
+
+The migration parses the phpMyAdmin dump directly (no MySQL needed), is
+idempotent (keyed by legacy id), converts wall-clock times from
+America/New_York to UTC, turns `<br/>`-separated needs into an array, and
+generates a new unguessable brief token per event. Legacy package names that
+drifted from the price list are mapped in
+`scripts/migrate-legacy/package-aliases.ts`; unmatched names keep the line with
+no package link so old invoices still render. Against production set
+`ALLOW_PROD_MIGRATION=1`.
+
+## Deploying
+
+1. **Database**: create a Neon project, copy the pooled connection string to
+   `DATABASE_URL`, run `npm run db:migrate` and `npm run db:seed` against it.
+2. **Email**: create a Resend API key, verify `vutc.com` (SPF and DKIM DNS
+   records), set `RESEND_API_KEY`, `EMAIL_FROM`, `EVENTS_INBOX`.
+3. **Bot protection**: create a Cloudflare Turnstile widget for the domain and
+   set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`.
+4. **Attachments**: create a Vercel Blob store and set `BLOB_READ_WRITE_TOKEN`
+   (optional; without it attachments are accepted but not stored).
+5. **Vercel**: import the repo, add every variable from `.env.example`
+   (`BETTER_AUTH_SECRET` from `openssl rand -base64 32`, `CRON_SECRET`
+   likewise, `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` set to
+   `https://www.vutc.com`). Vercel reads `vercel.json` for the cron jobs.
+6. **First admin**: run `SEED_ADMIN_EMAIL=... SEED_ADMIN_PASSWORD=... npm run db:seed`
+   once against production from a trusted machine, sign in, change the
+   password, then invite the rest of the board from Manage > Personnel.
+7. **Cutover**: freeze the old site, run the legacy migration and verifier
+   against the production database, point DNS at Vercel, keep the old site
+   reachable on a subdomain behind basic auth for historical pay lookups.
+
 ## Security rules
 
 - All database access goes through Drizzle. `sql.raw` is banned by ESLint.
