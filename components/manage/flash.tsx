@@ -1,3 +1,5 @@
+import { Alert } from "@/components/ui/alert";
+
 const MESSAGES: Record<string, string> = {
   confirm: "Request approved.",
   open: "Event opened for signup.",
@@ -19,9 +21,5 @@ const MESSAGES: Record<string, string> = {
 export function Flash({ code }: { code?: string }) {
   if (!code || !MESSAGES[code]) return null;
   const bad = ["illegal", "invalid", "nolines"].includes(code);
-  return (
-    <p role="status" className={`rounded border p-3 text-sm ${bad ? "border-amber-300 bg-amber-50" : "border-green-300 bg-green-50"}`}>
-      {MESSAGES[code]}
-    </p>
-  );
+  return <Alert variant={bad ? "warning" : "success"}>{MESSAGES[code]}</Alert>;
 }

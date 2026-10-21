@@ -14,7 +14,7 @@ export function SignupButtons({
 }) {
   const visible = decisions.filter((d) => d.state !== "hidden");
   if (visible.length === 0) {
-    return <p className="text-xs text-gray-500">No positions available to you.</p>;
+    return <p className="text-xs text-muted-foreground">No positions available to you.</p>;
   }
   return (
     <div className="flex flex-wrap gap-2">
@@ -30,24 +30,24 @@ export function SignupButtons({
           </form>
         ) : d.state === "signed" ? (
           <form key={d.role} action={dropEvent} className="flex items-center gap-2">
-            <span className="text-sm rounded bg-green-50 border border-green-300 px-3 py-1.5">
+            <span className="text-sm rounded bg-success-soft border border-success-border px-3 py-1.5">
               {d.label}
             </span>
             <input type="hidden" name="eventId" value={eventId} />
             <input type="hidden" name="role" value={d.role} />
             <input type="hidden" name="returnTo" value={returnTo} />
             {allowDrop ? (
-              <button type="submit" className="text-sm underline text-red-700">
+              <button type="submit" className="text-sm underline text-destructive">
                 Drop
               </button>
             ) : (
-              <span className="text-xs text-gray-500">Contact your head tech to drop</span>
+              <span className="text-xs text-muted-foreground">Contact your head tech to drop</span>
             )}
           </form>
         ) : (
           <span
             key={d.role}
-            className="text-sm rounded border px-3 py-1.5 text-gray-500 bg-gray-50"
+            className="text-sm rounded border px-3 py-1.5 text-muted-foreground bg-muted"
           >
             {d.label}
           </span>

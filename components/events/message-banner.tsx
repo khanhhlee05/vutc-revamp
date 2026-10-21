@@ -8,7 +8,7 @@ export function MessageBanner({ code }: { code?: string }) {
   return (
     <p
       role="status"
-      className={`rounded border p-3 text-sm ${bad ? "border-amber-300 bg-amber-50" : "border-green-300 bg-green-50"}`}
+      className={`rounded border p-3 text-sm ${bad ? "border-warning-border bg-warning-soft" : "border-success-border bg-success-soft"}`}
     >
       {text}
     </p>

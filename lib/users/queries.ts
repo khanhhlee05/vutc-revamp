@@ -13,7 +13,9 @@ export async function listUsers() {
       gradYear: staffProfiles.gradYear,
       isActive: staffProfiles.isActive,
       isApproved: staffProfiles.isApproved,
-      roles: sql<string[]>`coalesce(array_agg(${userRoles.role}) filter (where ${userRoles.role} is not null), '{}')`,
+      // Cast to text: node-postgres only parses arrays of built-in types, so an
+      // array of the user_role enum would arrive as the string "{exec,senior}".
+      roles: sql<string[]>`coalesce(array_agg(${userRoles.role}::text) filter (where ${userRoles.role} is not null), '{}'::text[])`,
     })
     .from(user)
     .leftJoin(staffProfiles, eq(staffProfiles.userId, user.id))
